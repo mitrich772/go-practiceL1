@@ -35,11 +35,11 @@ func main() {
     	workerToStop(ctx, 2)
 	})
 
-	<-signalChan
+	<-signalChan //Ждем Ctrl+C
 	fmt.Println("Получен сигнал стопа.")
 
 	cancel()
-	wg.Wait()
+	wg.Wait() // Ждем остановки воркеров
 	fmt.Println("Все конец.")
 
 }
