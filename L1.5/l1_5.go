@@ -1,47 +1,32 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"sync"
 	"time"
 )
-func producer(ctx context.Context, ch chan string){
+
+func producer(ch chan string){ // Будет писать в канал с перерывом в секунду 
+	i := 1
 	for{
-		select{
-		case <-ctx.Done():
-			fmt.Println("Продюссер погиб")
-			return
-		case ch <- "Привет,пишу тебе друг мой":
-			time.Sleep(1 * time.Second)
-		}
+		fmt.Println("Шлю сообщение")
+		ch <- fmt.Sprintf("Привет, пишу тебе друг мой #%d", i)
+		i++
+		time.Sleep(1 * time.Second)
 	}
 }
-func consumer(ctx context.Context, ch chan string){
-	for{
-		select{
-		case <-ctx.Done():
-			fmt.Println("Консумер пал...")
-			return
-		case msg := <-ch:
-			fmt.Printf("Получил твое сообщение: %s\n",msg)
-		}
+
+func consumer(ch chan string){ // слушает канал, выводит полученные сообщения
+	for msg := range ch {
+		fmt.Printf("Получил твое сообщение: %s\n", msg)
 	}
 }
+
 func main(){
-	var wg sync.WaitGroup
 	channel := make(chan string)
-	ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
-	defer cancel()
-
-	wg.Go(func(){
-		producer(ctx, channel)
-	})
-	wg.Go(func(){
-		consumer(ctx, channel)
-	})
-
-	wg.Wait()
-
+	go consumer(channel)
+	go producer(channel)
+	// Ждём N секунд с помощью time.After
+	N := 10 * time.Second
+	<-time.After(N) // n секунд работаем
 	fmt.Println("И осталась пустота...")
 }
