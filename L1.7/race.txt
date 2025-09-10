@@ -1,0 +1,54 @@
+WARNING: DATA RACE
+Write at 0x00c00008a1b0 by goroutine 8:
+  runtime.mapassign_faststr()
+      C:/Program Files/Go/src/internal/runtime/maps/runtime_faststr_swiss.go:263 +0x0
+  main.main.func1()
+      C:/Users/dima/Desktop/L1/L1.7/l1_7.go:17 +0xdb
+  sync.(*WaitGroup).Go.func1()
+      C:/Program Files/Go/src/sync/waitgroup.go:239 +0x5d
+
+Previous write at 0x00c00008a1b0 by goroutine 10:
+  runtime.mapassign_faststr()
+      C:/Program Files/Go/src/internal/runtime/maps/runtime_faststr_swiss.go:263 +0x0
+  main.main.func1()
+      C:/Users/dima/Desktop/L1/L1.7/l1_7.go:17 +0xdb
+  sync.(*WaitGroup).Go.func1()
+      C:/Program Files/Go/src/sync/waitgroup.go:239 +0x5d
+
+Goroutine 8 (running) created at:
+  sync.(*WaitGroup).Go()
+      C:/Program Files/Go/src/sync/waitgroup.go:237 +0x86
+  main.main()
+      C:/Users/dima/Desktop/L1/L1.7/l1_7.go:14 +0x84
+
+Goroutine 10 (running) created at:
+  sync.(*WaitGroup).Go()
+      C:/Program Files/Go/src/sync/waitgroup.go:237 +0x86
+  main.main()
+      C:/Users/dima/Desktop/L1/L1.7/l1_7.go:14 +0x84
+==================
+fatal error: concurrent map writes
+
+goroutine 22 [running]:
+internal/runtime/maps.fatal({0x14015d718?, 0x1400876f4?})
+        C:/Program Files/Go/src/runtime/panic.go:1046 +0x18
+main.main.func1()
+        C:/Users/dima/Desktop/L1/L1.7/l1_7.go:17 +0xdc
+sync.(*WaitGroup).Go.func1()
+        C:/Program Files/Go/src/sync/waitgroup.go:239 +0x5e
+created by sync.(*WaitGroup).Go in goroutine 1
+        C:/Program Files/Go/src/sync/waitgroup.go:237 +0x87
+
+goroutine 1 [sync.WaitGroup.Wait]:
+sync.runtime_SemacquireWaitGroup(0xc00008c070?, 0x0?)
+        C:/Program Files/Go/src/runtime/sema.go:114 +0x2e
+sync.(*WaitGroup).Wait(0xc00008c070)
+        C:/Program Files/Go/src/sync/waitgroup.go:206 +0xd3
+main.main()
+        C:/Users/dima/Desktop/L1/L1.7/l1_7.go:22 +0x10a
+
+goroutine 21 [running]:
+        goroutine running on other thread; stack unavailable
+created by sync.(*WaitGroup).Go in goroutine 1
+        C:/Program Files/Go/src/sync/waitgroup.go:237 +0x87
+exit status 2
